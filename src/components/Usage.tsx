@@ -8,9 +8,10 @@ import { exportIcon } from '@progress/kendo-svg-icons';
 import UsageChart from '../internal-building-blocks/usage-chart';
 import { chipData } from '../data';
 import { CustomChip } from '../custom-components/CustomComponents';
+import type { ChartRefreshFunction } from '../types/chart';
 
 interface UsageProps {
-  onRefresh: (chartOptions: any, themeOptions: any, chartInstance: { setOptions: (arg0: any, arg1: any) => void; }) => void;
+  onRefresh: ChartRefreshFunction;
 }
 
 export default function Usage({ onRefresh }: UsageProps) {

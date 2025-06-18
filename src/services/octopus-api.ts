@@ -4,6 +4,26 @@ const OCTOPUS_API_BASE_URL = 'https://api.octopus.energy';
 const ACCOUNT_NUMBER = import.meta.env.VITE_OCTOPUS_ENERGY_ACCOUNT_NUMBER || 'A-C733EB22';
 const API_KEY = import.meta.env.VITE_OCTOPUS_API_KEY;
 
+export interface ElectricityMeterPoint {
+  mpan: string;
+  profile_class: number;
+  consumption_standard: number;
+  meters: Array<{
+    serial_number: string;
+    registers?: Array<{
+      identifier: string;
+      rate: string;
+      is_settlement_register: boolean;
+    }>;
+  }>;
+  agreements: Array<{
+    tariff_code: string;
+    valid_from: string;
+    valid_to: string | null;
+  }>;
+  is_export: boolean;
+}
+
 export interface Property {
   id: number;
   moved_in_at: string;
@@ -14,7 +34,7 @@ export interface Property {
   town: string;
   county: string;
   postcode: string;
-  electricity_meter_points: any[];
+  electricity_meter_points: ElectricityMeterPoint[];
 }
 
 export interface AccountProperties {

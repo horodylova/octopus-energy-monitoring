@@ -8,9 +8,10 @@ import { exportIcon } from '@progress/kendo-svg-icons';
 import CostChart from '../internal-building-blocks/cost-chart';
 import { chipData } from '../data';
 import { CustomChip } from '../custom-components/CustomComponents';
+import type { ChartRefreshFunction } from '../types/chart';
 
 interface CostProps {
-  onRefresh: (chartOptions: any, themeOptions: any, chartInstance: { setOptions: (arg0: any, arg1: any) => void; }) => void;
+  onRefresh: ChartRefreshFunction;
 }
 
 export default function Cost({ onRefresh }: CostProps) {
