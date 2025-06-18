@@ -42,6 +42,9 @@ import CostChart from './internal-building-blocks/cost-chart';
 import RequestsChart from './internal-building-blocks/requests-chart';
 import UsageChart from './internal-building-blocks/usage-chart';
 import RateLimitsGrid from './internal-building-blocks/rate-limits-grid';
+import DailyStats from './components/DailyStats';
+import Usage from './components/Usage';
+import Cost from './components/Cost';
 
 import logo from '@assets/templates/ai-usage-monitoring/logo.svg?url';
 import compactLogo from '@assets/templates/ai-usage-monitoring/compact-logo.svg?url';
@@ -62,54 +65,12 @@ import {
 
 import React from 'react';
 import APIKeysGrid from './internal-building-blocks/api-keys-grid';
-
-const CustomDrawerItem = (props: DrawerItemProps) => {
-  const { visible, dataExpanded, parentId, id, className, level, ...others } = props;
-  const arrowDir = dataExpanded ? chevronUpIcon : chevronDownIcon;
-
-  if (!props.separator) {
-    return visible === false ? null : (
-      <DrawerItem id={props.id} className={`${className} k-font-size-md k-align-items-center`} {...others} >
-        <img src={props.image} alt="Emoji" className="k-w-4 k-h-4" />
-        <span className="k-item-text">{props.text}</span>
-        {dataExpanded !== undefined && (
-          <SvgIcon
-            icon={arrowDir}
-            style={{
-              marginLeft: 'auto',
-            }}
-          />
-        )}
-      </DrawerItem>
-    )
-  } else {
-    return <DrawerItem separator={props.separator} />;
-  }
-};
-
-const CustomToggleButton = (props: ToggleButtonProps) => {
-  return (
-    <>
-      <SvgIcon className="k-clear-value" icon={xIcon} />
-      <ToggleButton {...props} title="togglebtn">
-        <span className="k-icon k-i-sort-desc-sm" />
-      </ToggleButton>
-    </>
-  );
-};
-
-const CustomChip = (props: ChipProps) => {
-  return <Chip {...props} rounded={'full'} ariaLabel="chiplist" />;
-};
-
-const adminItemsRender = (props: { item: { icon: SVGIcon; text: string } }) => {
-  return (
-    <div>
-      <SvgIcon icon={props.item.icon} className="k-mr-2" />
-      {`${props.item.text}`}
-    </div>
-  );
-};
+import {
+  CustomDrawerItem,
+  CustomToggleButton,
+  CustomChip,
+  adminItemsRender
+} from './custom-components/CustomComponents';
 
 export default function AiUsageMonitoring() {
   const [expanded, setExpanded] = React.useState(true);
@@ -265,261 +226,20 @@ export default function AiUsageMonitoring() {
         <DrawerContent style={{ background: 'var(--panel-gradient)' }}>
           <main className="k-px-2 k-px-sm-4.5 k-px-md-6 k-px-lg-4 k-px-xl-10 k-py-2 k-py-sm-4.5 k-py-md-6 k-py-lg-4 k-py-xl-12 k-pt-8">
             <h1 className="k-h1 !k-mb-5 k-color-primary k-text-ellipsis">
-              AI Usage Monitoring Dashboard
+              Energy Monitoring Dashboard
             </h1>
 
             <div className="k-display-flex k-flex-col k-gap-10">
               {/* Daily Stats */}
-              <div>
-                <div className="k-d-flex k-flex-wrap k-mb-5 k-gap-4 k-justify-content-between k-align-items-center">
-                  <h2 className="k-h5 !k-mb-0 k-color-subtle">Daily Stats</h2>
-                  <DatePicker
-                    fillMode="flat"
-                    value={new Date('1/21/2021')}
-                    width={'172px'}
-                    toggleButton={CustomToggleButton}
-                    ariaLabel="datepicker"
-                  />
-                </div>
-                <div className="k-d-grid k-grid-cols-6 k-gap-5 k-gap-sm-4 k-gap-md-3 k-gap-xl-4 k-overflow-hidden">
-                  {/* CMPCTCARD-9 Start */}
-                  <div
-                    className="k-col-span-6 k-col-span-sm-3 k-col-span-md-2 k-col-span-xl-1 k-d-flex k-flex-col k-flex-basis-0 k-flex-grow k-border k-border-solid k-border-border k-overflow-hidden k-bg-surface-alt k-rounded-lg"
-                    style={{ background: 'var(--card-gradient)' }}
-                  >
-                    <div className="k-flex-1 k-d-flex k-flex-col k-border-0 k-border-left-4 k-border-solid k-border-error k-p-2 k-pl-3">
-                      <div className="k-d-flex k-flex-col k-font-size-xs k-line-height-lg">
-                        <div>Cost</div>
-                      </div>
-                      <div className="k-d-flex k-gap-1 k-pt-1 k-justify-content-between k-align-items-center k-flex-wrap">
-                        <div className="k-font-size-xl k-font-bold k-color-subtle">
-                          $0.23
-                        </div>
-                        <Badge
-                          themeColor="error"
-                          size="small"
-                          rounded="medium"
-                          position={null}
-                          aria-label="badge"
-                        >
-                          Decreasing
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="k-col-span-6 k-col-span-sm-3 k-col-span-md-2 k-col-span-xl-1 k-d-flex k-flex-col k-flex-basis-0 k-flex-grow k-border k-border-solid k-border-border k-overflow-hidden k-bg-surface-alt k-rounded-lg"
-                    style={{ background: 'var(--card-gradient)' }}
-                  >
-                    <div className="k-flex-1 k-d-flex k-flex-col k-border-0 k-border-left-4 k-border-solid k-border-success k-p-2 k-pl-3">
-                      <div className="k-d-flex k-flex-col k-font-size-xs k-line-height-lg">
-                        <div>Request</div>
-                      </div>
-                      <div className="k-d-flex k-gap-1 k-pt-1 k-justify-content-between k-align-items-center k-flex-wrap">
-                        <div className="k-font-size-xl k-font-bold k-color-subtle">
-                          $238
-                        </div>
-                        <Badge
-                          themeColor="success"
-                          size="small"
-                          rounded="medium"
-                          position={null}
-                          aria-label="badge"
-                        >
-                          Increasing
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="k-col-span-6 k-col-span-sm-3 k-col-span-md-2 k-col-span-xl-1 k-d-flex k-flex-col k-flex-basis-0 k-flex-grow k-border k-border-solid k-border-border k-overflow-hidden k-bg-surface-alt k-rounded-lg"
-                    style={{ background: 'var(--card-gradient)' }}
-                  >
-                    <div className="k-flex-1 k-d-flex k-flex-col k-border-0 k-border-left-4 k-border-solid k-border-error k-p-2 k-pl-3">
-                      <div className="k-d-flex k-flex-col k-font-size-xs k-line-height-lg">
-                        <div>Context Tokens</div>
-                      </div>
-                      <div className="k-d-flex k-gap-1 k-pt-1 k-justify-content-between k-align-items-center k-flex-wrap">
-                        <div className="k-font-size-xl k-font-bold k-color-subtle">
-                          85 430
-                        </div>
-                        <Badge
-                          themeColor="error"
-                          size="small"
-                          rounded="medium"
-                          position={null}
-                          aria-label="badge"
-                        >
-                          Decreasing
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="k-col-span-6 k-col-span-sm-3 k-col-span-md-2 k-col-span-xl-1 k-d-flex k-flex-col k-flex-basis-0 k-flex-grow k-border k-border-solid k-border-border k-overflow-hidden k-bg-surface-alt k-rounded-lg"
-                    style={{ background: 'var(--card-gradient)' }}
-                  >
-                    <div className="k-flex-1 k-d-flex k-flex-col k-border-0 k-border-left-4 k-border-solid k-border-success k-p-2 k-pl-3">
-                      <div className="k-d-flex k-flex-col k-font-size-xs k-line-height-lg">
-                        <div>Generated Tokens</div>
-                      </div>
-                      <div className="k-d-flex k-gap-1 k-pt-1 k-justify-content-between k-align-items-center k-flex-wrap">
-                        <div className="k-font-size-xl k-font-bold k-color-subtle">
-                          6 610
-                        </div>
-                        <Badge
-                          themeColor="success"
-                          size="small"
-                          rounded="medium"
-                          position={null}
-                          aria-label="badge"
-                        >
-                          Increasing
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="k-col-span-6 k-col-span-sm-3 k-col-span-md-2 k-col-span-xl-1 k-d-flex k-flex-col k-flex-basis-0 k-flex-grow k-border k-border-solid k-border-border k-overflow-hidden k-bg-surface-alt k-rounded-lg"
-                    style={{ background: 'var(--card-gradient)' }}
-                  >
-                    <div className="k-flex-1 k-d-flex k-flex-col k-border-0 k-border-left-4 k-border-solid k-border-error k-p-2 k-pl-3">
-                      <div className="k-d-flex k-flex-col k-font-size-xs k-line-height-lg">
-                        <div>Precision Value</div>
-                      </div>
-                      <div className="k-d-flex k-gap-1 k-pt-1 k-justify-content-between k-align-items-center k-flex-wrap">
-                        <div className="k-font-size-xl k-font-bold k-color-subtle">
-                          78%
-                        </div>
-                        <Badge
-                          themeColor="error"
-                          size="small"
-                          rounded="medium"
-                          position={null}
-                          aria-label="badge"
-                        >
-                          Decreasing
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="k-col-span-6 k-col-span-sm-3 k-col-span-md-2 k-col-span-xl-1 k-d-flex k-flex-col k-flex-basis-0 k-flex-grow k-border k-border-solid k-border-border k-overflow-hidden k-bg-surface-alt k-rounded-lg"
-                    style={{ background: 'var(--card-gradient)' }}
-                  >
-                    <div className="k-flex-1 k-d-flex k-flex-col k-border-0 k-border-left-4 k-border-solid k-border-success k-p-2 k-pl-3">
-                      <div className="k-d-flex k-flex-col k-font-size-xs k-line-height-lg">
-                        <div>Predictions</div>
-                      </div>
-                      <div className="k-d-flex k-gap-1 k-pt-1 k-justify-content-between k-align-items-center k-flex-wrap">
-                        <div className="k-font-size-xl k-font-bold k-color-subtle">
-                          8 549
-                        </div>
-                        <Badge
-                          themeColor="success"
-                          size="small"
-                          rounded="medium"
-                          position={null}
-                          aria-label="badge"
-                        >
-                          Increasing
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                  {/* CMPCTCARD-2 End */}
-                </div>
-              </div>
+              <DailyStats />
 
               {/* Usage */}
-              <div>
-                <h2 className="k-h5 !k-mb-5 k-color-subtle">Usage</h2>
-                <div
-                  className="k-d-flex k-flex-col k-border k-border-solid k-border-border k-bg-surface-alt k-rounded-lg"
-                  style={{ background: 'var(--card-gradient)' }}
-                >
-                  <div className="k-p-4 k-d-flex k-justify-content-between k-flex-wrap k-gap-2 k-p-4">
-                    <span className="k-font-size-xl k-font-weight-bold k-color-on-app-surface">
-                      Usage of tokens
-                    </span>
-                    <ButtonGroup>
-                      <Button title="minute">Minute</Button>
-                      <Button className="k-selected" title="day">
-                        Day
-                      </Button>
-                      <Button title="month">Month</Button>
-                      <Button title="year">Year</Button>
-                      <Button title="total">Total</Button>
-                    </ButtonGroup>
-                  </div>
-                  <div className="k-flex-1 k-p-4 k-d-flex k-flex-col k-gap-4">
-                    <ChipList
-                      className="k-gap-2"
-                      data={chipData}
-                      chip={CustomChip}
-                      ariaLabel="chiplist"
-                    />
-
-                    <div className="k-flex-1">
-                      {/* chart */}
-                      <UsageChart onRefresh={handleChartRefresh} />
-                    </div>
-                  </div>
-                  <div className="k-p-2">
-                    <Button svgIcon={exportIcon} fillMode="flat" title="export">
-                      Export
-                    </Button>
-                  </div>
-                </div>
-              </div>
+              <Usage onRefresh={handleChartRefresh} />
 
               {/* Cost */}
               <div className="k-d-grid k-grid-cols-3 k-gap-10 k-gap-xl-4">
                 <div className="k-col-span-3 k-col-span-xl-2 k-d-flex k-flex-col k-gap-10">
-                  <div className="k-flex-1 k-d-flex k-flex-col">
-                    <h2 className="k-h5 !k-mb-5 k-color-subtle">Cost</h2>
-                    <div
-                      className="k-flex-1 k-d-flex k-flex-col k-border k-border-solid k-border-border k-bg-surface-alt k-rounded-lg"
-                      style={{ background: 'var(--card-gradient)' }}
-                    >
-                      <div className="k-d-flex k-justify-content-between k-flex-wrap k-gap-2 k-p-4">
-                        <span className="k-font-size-xl k-font-weight-bold k-color-on-app-surface">
-                          Cost over time
-                        </span>
-                        <ButtonGroup>
-                          <Button title="minute">Minute</Button>
-                          <Button title="day">Day</Button>
-                          <Button title="month">Month</Button>
-                          <Button className="k-selected" title="year">
-                            Year
-                          </Button>
-                          <Button title="total">Total</Button>
-                        </ButtonGroup>
-                      </div>
-                      <div className="k-flex-1 k-p-4 k-d-flex k-flex-col k-gap-4">
-                        <ChipList
-                          className="k-gap-2"
-                          data={chipData}
-                          chip={CustomChip}
-                          selection="multiple"
-                          ariaLabel="chiplist"
-                        />
-                        <div className="k-flex-1">
-                          {/* chart with 100% height */}
-                          <CostChart onRefresh={handleChartRefresh} />
-                        </div>
-                      </div>
-                      <div className="k-p-2">
-                        <Button
-                          svgIcon={exportIcon}
-                          fillMode="flat"
-                          title="export"
-                        >
-                          Export
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+                  <Cost onRefresh={handleChartRefresh} />
                   <div className="k-flex-1 k-d-flex k-flex-col">
                     <h2 className="k-h5 !k-mb-5 k-color-subtle">Requests</h2>
                     <div
