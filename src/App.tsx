@@ -45,7 +45,6 @@ import {
   bellIcon,
   caretAltDownIcon,
   menuIcon,
-  plusIcon,
   searchIcon,
   userIcon,
   exportIcon,
